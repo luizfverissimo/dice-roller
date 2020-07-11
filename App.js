@@ -1,21 +1,21 @@
-import { StatusBar } from 'expo-status-bar';
-import React from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import React, {useState} from "react";
+import { AppLoading } from "expo";
+import * as Font from 'expo-font'
 
-export default function App() {
-  return (
-    <View style={styles.container}>
-      <Text>Open up App.js to start working on your app!</Text>
-      <StatusBar style="auto" />
-    </View>
-  );
+import RollNavigator from "./navigation/RollNavigator";
+
+const fetchFonts = () => {
+  return Font.loadAsync({
+    'roboto': require('./assets/Roboto-Medium.ttf'),
+    'robotoBold': require('./assets/Roboto-Bold.ttf')
+  })
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
+export default function App() {
+  const [isLoad, setIsLoad] = useState(false)
+  if(!isLoad) {
+    return <AppLoading  startAsync={fetchFonts} onFinish={() => setIsLoad(true)} />
+  }
+
+  return <RollNavigator />;
+}
