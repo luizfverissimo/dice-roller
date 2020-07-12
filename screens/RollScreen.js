@@ -38,8 +38,22 @@ const RollScreen = (props) => {
 
   //filtra o estado e cria um obj com os dados e o número de cada um
   const filterDicePool = (pool) => {
-    let dicePools = {};
+    let dicePools = {
+      mod: 0
+    };
     pool.forEach((dice) => {
+      if (dice === 'plus') {
+        dicePools.mod = dicePools.mod + (dicePools[dice] || 0) + 1
+        dicePools[dice] = 0
+        return
+      }
+
+      if (dice === 'minus') {
+        dicePools.mod = dicePools.mod - ((dicePools[dice] || 0) + 1)
+        dicePools[dice] = 0
+        return
+      }
+
       dicePools[dice] = (dicePools[dice] || 0) + 1;
     });
     console.log(dicePools);
@@ -51,17 +65,6 @@ const RollScreen = (props) => {
     filterDicePool(rollPool);
   }, [rollPool]);
 
-  //faz a soma dos modificadores
-  const modCreator = () => {
-    const modifier = dicePool.plus - dicePool.minus
-    setDicePool({...dicePool, ...modifier})
-  }
-
-  //useEffect que atualiza e faz a soma dos modificadores
-  useEffect(() => {
-    modCreator()
-  },[dicePool])
-
   //função que percorre o obj e cria um texto para ser mostrado
   const diceCounter = () => {
     let diceText = "";
@@ -72,10 +75,8 @@ const RollScreen = (props) => {
       }
       if (dice === "mod") {
         diceText += ` ${dicePool.mod > 0 ? '+' : '-'} ${dicePool.mod}`
-        return
       }
-      diceText += ` ${dicePool[dice]} ${dice},`;
-      console.log(diceMod)      
+      diceText += ` ${dicePool[dice]} ${dice},`;   
     };
     diceTextGenerator("D4");
     diceTextGenerator("D6");
