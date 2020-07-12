@@ -22,12 +22,13 @@ const RollScreen = (props) => {
     D10: 0,
     D12: 0,
     D20: 0,
-    "+": 0,
-    "-": 0,
-  }
+    plus: 0,
+    minus: 0,
+    mod: 0
+  };
 
   const [rollPool, setRollPool] = useState([]);
-  const [dicePool, setDicePool] = useState({dicePoolInitial});
+  const [dicePool, setDicePool] = useState({ dicePoolInitial });
 
   //controlador do Modal
   const modalizeRef = useRef(null);
@@ -41,39 +42,127 @@ const RollScreen = (props) => {
     pool.forEach((dice) => {
       dicePools[dice] = (dicePools[dice] || 0) + 1;
     });
+    console.log(dicePools);
     setDicePool(dicePools);
-  };
-
-  //função que percorre o obj e cria um texto para ser mostrado
-  const diceCount = () => {
-    let diceText = ""
-    const diceTextGenerator = (dice) => {
-      if(!dicePool[dice]){
-        return
-      }
-      diceText += ` ${dicePool[dice]} ${dice} ,`
-    }
-    diceTextGenerator('D4')
-    diceTextGenerator('D6')
-    diceTextGenerator('D8')
-    diceTextGenerator('D10')
-    diceTextGenerator('D12')
-    diceTextGenerator('D20')
-    diceTextGenerator('+')
-    diceTextGenerator('-')
-    
-    return diceText;
   };
 
   //useEffect que atualiza o texto com o novo dado inserido
   useEffect(() => {
     filterDicePool(rollPool);
-  },[rollPool])
+  }, [rollPool]);
+
+  //faz a soma dos modificadores
+  const modCreator = () => {
+    const modifier = dicePool.plus - dicePool.minus
+    setDicePool({...dicePool, ...modifier})
+  }
+
+  //useEffect que atualiza e faz a soma dos modificadores
+  useEffect(() => {
+    modCreator()
+  },[dicePool])
+
+  //função que percorre o obj e cria um texto para ser mostrado
+  const diceCounter = () => {
+    let diceText = "";
+    
+    const diceTextGenerator = (dice) => {
+      if (!dicePool[dice]) {
+        return;
+      }
+      if (dice === "mod") {
+        diceText += ` ${dicePool.mod > 0 ? '+' : '-'} ${dicePool.mod}`
+        return
+      }
+      diceText += ` ${dicePool[dice]} ${dice},`;
+      console.log(diceMod)      
+    };
+    diceTextGenerator("D4");
+    diceTextGenerator("D6");
+    diceTextGenerator("D8");
+    diceTextGenerator("D10");
+    diceTextGenerator("D12");
+    diceTextGenerator("D20");
+    diceTextGenerator("mod");
+
+    return diceText;
+  };
+
+  
 
   //Adiciona o dado selecionado pelo botão no state e filtra os dados criando um obj - dicePool
   const addDiceToPoolHandler = (dice) => {
     setRollPool(rollPool.concat(dice));
-    
+  };
+
+  const rollDicePoolHandler = (pool) => {
+    let d4Roll = [];
+    let d6Roll = [];
+    let d8Roll = [];
+    let d10Roll = [];
+    let d12Roll = [];
+    let d20Roll = [];
+    let rollMod = 0;
+    let rollSum = 0;
+
+    const rollPoolObj = (pool) => {
+      //rolar o número de vezes de cada key do obj dicepool
+      const rollDice = (dice, numberDice) => {
+        //realiza a rolagem
+        const diceType = parseInt(dice.substr(1, 2));
+        let rollArr = [];
+        for (let counter = 0; counter < numberDice; counter++) {
+          const roll = Math.floor(Math.random() * diceType) + 1;
+          rollArr.push(roll);
+        }
+        return rollArr;
+      };
+
+      const rollAndAddToArray = () => {
+        Object.keys(pool).forEach((dice) => {
+          if (pool[dice] === 0) {
+            return;
+          }
+          const rolls = rollDice(dice, pool[dice]);
+          //armazenar a rolagem de cada dado em um array
+          switch (dice) {
+            case "D4":
+              rolls.forEach((roll) => d4Roll.push(roll));
+              break;
+            case "D6":
+              rolls.forEach((roll) => d6Roll.push(roll));
+              break;
+            case "D8":
+              rolls.forEach((roll) => d8Roll.push(roll));
+              break;
+            case "D10":
+              rolls.forEach((roll) => d10Roll.push(roll));
+              break;
+            case "D12":
+              rolls.forEach((roll) => d12Roll.push(roll));
+              break;
+            case "D20":
+              rolls.forEach((roll) => d20Roll.push(roll));
+              break;
+            case "+":
+              rollMod = pool[mod];
+              break;
+            case "-":
+              rollMod = pool[mod];
+              break;
+          }
+        });
+      };
+      rollAndAddToArray();
+      console.log(d4Roll, d6Roll, d8Roll, d10Roll, d12Roll, d20Roll, rollMod);
+    };
+    rollPoolObj(pool);
+
+    //somar todas as rolagens para gerar um valor final
+    //adicionar ou subtrair os modificadores
+    //gerar o texto do valor total
+    //gerar o texto do pool
+    //gerar o texto de cada rolagem individual armazenada no array de cada dado
   };
 
   return (
@@ -84,14 +173,14 @@ const RollScreen = (props) => {
         rootStyle={styles.rootModal}
         modalTopOffset={100}
         onClosed={() => {
-          setRollPool([])
-          setDicePool(dicePoolInitial)
+          setRollPool([]);
+          setDicePool(dicePoolInitial);
         }}
       >
         <View style={styles.buttons}>
           <RedBorder style={styles.redBorder}>
             <DefaultText style={styles.textRedBorder}>
-              {diceCount()}
+              {diceCounter()}
             </DefaultText>
           </RedBorder>
           <View style={styles.diceButtonsContainer}>
@@ -130,16 +219,16 @@ const RollScreen = (props) => {
             <DiceButtons
               icon="plus"
               style={styles.diceButtons}
-              onPress={() => addDiceToPoolHandler("+")}
+              onPress={() => addDiceToPoolHandler("plus")}
             />
             <DiceButtons
               icon="minus"
               style={styles.diceButtons}
-              onPress={() => addDiceToPoolHandler("-")}
+              onPress={() => addDiceToPoolHandler("minus")}
             />
           </View>
           <View style={styles.diceButtonsContainer}>
-            <RollModalButton />
+            <RollModalButton onPress={() => rollDicePoolHandler(dicePool)} />
           </View>
         </View>
       </Modalize>
@@ -195,7 +284,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   textRedBorder: {
-    padding: 5
+    padding: 5,
   },
   diceButtonsContainer: {
     flexDirection: "row",
