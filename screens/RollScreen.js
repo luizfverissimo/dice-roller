@@ -24,11 +24,13 @@ const RollScreen = (props) => {
     D20: 0,
     plus: 0,
     minus: 0,
-    mod: 0
+    mod: 0,
   };
 
   const [rollPool, setRollPool] = useState([]);
   const [dicePool, setDicePool] = useState({ dicePoolInitial });
+  const [rollResults, setRollResults] = useState({});
+  const [rollStats, setRollStats] = useState({});
 
   //controlador do Modal
   const modalizeRef = useRef(null);
@@ -39,24 +41,24 @@ const RollScreen = (props) => {
   //filtra o estado e cria um obj com os dados e o número de cada um
   const filterDicePool = (pool) => {
     let dicePools = {
-      mod: 0
+      mod: 0,
     };
     pool.forEach((dice) => {
-      if (dice === 'plus') {
-        dicePools.mod = dicePools.mod + (dicePools[dice] || 0) + 1
-        dicePools[dice] = 0
-        return
+      if (dice === "plus") {
+        dicePools.mod = dicePools.mod + (dicePools[dice] || 0) + 1;
+        dicePools[dice] = 0;
+        return;
       }
 
-      if (dice === 'minus') {
-        dicePools.mod = dicePools.mod - ((dicePools[dice] || 0) + 1)
-        dicePools[dice] = 0
-        return
+      if (dice === "minus") {
+        dicePools.mod = dicePools.mod - ((dicePools[dice] || 0) + 1);
+        dicePools[dice] = 0;
+        return;
       }
 
       dicePools[dice] = (dicePools[dice] || 0) + 1;
     });
-    console.log(dicePools);
+    /* console.log(dicePools); */
     setDicePool(dicePools);
   };
 
@@ -66,17 +68,19 @@ const RollScreen = (props) => {
   }, [rollPool]);
 
   //função que percorre o obj e cria um texto para ser mostrado
+  let diceTextFinal;
   const diceCounter = () => {
     let diceText = "";
-    
+
     const diceTextGenerator = (dice) => {
       if (!dicePool[dice]) {
         return;
       }
       if (dice === "mod") {
-        diceText += ` ${dicePool.mod > 0 ? '+' : '-'} ${dicePool.mod}`
+        diceText += ` ${dicePool.mod > 0 ? "+" : ""}${dicePool.mod}`;
+        return;
       }
-      diceText += ` ${dicePool[dice]} ${dice},`;   
+      diceText += ` ${dicePool[dice]} ${dice},`;
     };
     diceTextGenerator("D4");
     diceTextGenerator("D6");
@@ -86,10 +90,10 @@ const RollScreen = (props) => {
     diceTextGenerator("D20");
     diceTextGenerator("mod");
 
+    //gerar o texto do pool
+    diceTextFinal = diceText;
     return diceText;
   };
-
-  
 
   //Adiciona o dado selecionado pelo botão no state e filtra os dados criando um obj - dicePool
   const addDiceToPoolHandler = (dice) => {
@@ -97,14 +101,16 @@ const RollScreen = (props) => {
   };
 
   const rollDicePoolHandler = (pool) => {
-    let d4Roll = [];
-    let d6Roll = [];
-    let d8Roll = [];
-    let d10Roll = [];
-    let d12Roll = [];
-    let d20Roll = [];
-    let rollMod = 0;
-    let rollSum = 0;
+    let results = {
+      D4Roll: [],
+      D6Roll: [],
+      D8Roll: [],
+      D10Roll: [],
+      D12Roll: [],
+      D20Roll: [],
+      rollMod: 0,
+      rollSum: 0,
+    };
 
     const rollPoolObj = (pool) => {
       //rolar o número de vezes de cada key do obj dicepool
@@ -128,42 +134,114 @@ const RollScreen = (props) => {
           //armazenar a rolagem de cada dado em um array
           switch (dice) {
             case "D4":
-              rolls.forEach((roll) => d4Roll.push(roll));
+              rolls.forEach((roll) => results.D4Roll.push(roll));
               break;
             case "D6":
-              rolls.forEach((roll) => d6Roll.push(roll));
+              rolls.forEach((roll) => results.D6Roll.push(roll));
               break;
             case "D8":
-              rolls.forEach((roll) => d8Roll.push(roll));
+              rolls.forEach((roll) => results.D8Roll.push(roll));
               break;
             case "D10":
-              rolls.forEach((roll) => d10Roll.push(roll));
+              rolls.forEach((roll) => results.D10Roll.push(roll));
               break;
             case "D12":
-              rolls.forEach((roll) => d12Roll.push(roll));
+              rolls.forEach((roll) => results.D12Roll.push(roll));
               break;
             case "D20":
-              rolls.forEach((roll) => d20Roll.push(roll));
+              rolls.forEach((roll) => results.D20Roll.push(roll));
               break;
-            case "+":
-              rollMod = pool[mod];
+            case "plus":
               break;
-            case "-":
-              rollMod = pool[mod];
+            case "minus":
+              break;
+            case "mod":
+              results.rollMod = pool["mod"];
               break;
           }
         });
       };
+
       rollAndAddToArray();
-      console.log(d4Roll, d6Roll, d8Roll, d10Roll, d12Roll, d20Roll, rollMod);
+
+      //somar todas as rolagens para gerar um valor final
+      const sum = (rolls) => {
+        let sumRoll = 0;
+        Object.keys(rolls).forEach((diceRolls) => {
+          if (diceRolls === "rollMod") {
+            sumRoll += parseInt(rolls[diceRolls]);
+
+            return;
+          } else if (diceRolls === "rollSum") {
+            return;
+          } else if (rolls[diceRolls].length !== 0) {
+            rolls[diceRolls].forEach((roll) => {
+              sumRoll += parseInt(roll);
+            });
+          }
+        });
+        results.rollSum = sumRoll;
+      };
+
+      sum(results);
+      console.log("results", results);
+      setRollResults(results);
     };
     rollPoolObj(pool);
+  };
 
-    //somar todas as rolagens para gerar um valor final
-    //adicionar ou subtrair os modificadores
-    //gerar o texto do valor total
+  //gerar o texto de cada rolagem individual armazenada no array de cada dado
+  const rollResultsPerDice = (results) => {
+    let rollResultsText = "";
+    Object.keys(results).forEach((diceRolls) => {
+      if (diceRolls === "rollMod" ||diceRolls === "rollSum") return;
+
+      if (results[diceRolls].length !== 0) {
+        const resultsString = results[diceRolls].toString();
+        console.log("resultsString", resultsString);
+        switch (diceRolls) {
+          case "D4Roll":
+            rollResultsText += ` D4: ${resultsString},`;
+            break;
+          case "D6Roll":
+            rollResultsText += ` D6: ${resultsString},`;
+            break;
+          case "D8Roll":
+            rollResultsText += ` D8: ${resultsString},`;
+            break;
+          case "D10Roll":
+            rollResultsText += ` D10: ${resultsString},`;
+            break;
+          case "D12Roll":
+            rollResultsText += ` D12: ${resultsString},`;
+            break;
+          case "D20Roll":
+            rollResultsText += ` D20: ${resultsString},`;
+            break;
+        }
+      } else {
+        return
+      }
+      console.log("rollResultsText", rollResultsText);
+    });
+    return rollResultsText;
+  };
+
+  useEffect(() => {
     //gerar o texto do pool
-    //gerar o texto de cada rolagem individual armazenada no array de cada dado
+    const rollResulTextFinal = rollResultsPerDice(rollResults);
+    setRollStats({
+      diceTextFinal: diceTextFinal,
+      rollResulTextFinal: rollResulTextFinal,
+    });
+    console.log(rollStats);
+  }, [rollResults]);
+
+  //gerar o texto do valor total
+  const rollSumResultFinal = () => {
+    let finalText = "";
+    finalText = rollResults.rollSum !== 0 ? rollResults.rollSum : "";
+    return finalText;
   };
 
   return (
@@ -229,14 +307,29 @@ const RollScreen = (props) => {
             />
           </View>
           <View style={styles.diceButtonsContainer}>
-            <RollModalButton onPress={() => rollDicePoolHandler(dicePool)} />
+            <RollModalButton
+              onPress={() => {
+                rollDicePoolHandler(dicePool);
+                modalizeRef.current?.close();
+              }}
+            />
           </View>
         </View>
       </Modalize>
 
       <View style={styles.screen}>
         <Card style={styles.card}>
-          <Text>RollScreen</Text>
+          <DefaultText style={styles.diceText}>
+            {rollStats.diceTextFinal}
+          </DefaultText>
+          <RedBorder style={styles.redBorderRoll}>
+            <BoldText style={styles.textRedBorderRoll}>
+              {rollSumResultFinal()}
+            </BoldText>
+          </RedBorder>
+          <DefaultText style={styles.diceText}>
+            {rollStats.rollResulTextFinal}
+          </DefaultText>
         </Card>
         <View style={styles.textContainer}>
           <BoldText style={styles.textBold}>Histórico</BoldText>
@@ -301,6 +394,20 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     marginTop: 20,
+  },
+  diceText: {
+    margin: 10,
+  },
+  redBorderRoll: {
+    width: "25%",
+    height: 80,
+    justifyContent: "center",
+    alignItems: "center",
+    borderRadius: 10,
+  },
+  textRedBorderRoll: {
+    color: Colors.primary,
+    fontSize: 38,
   },
   rollButton: {
     position: "absolute",
