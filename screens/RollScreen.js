@@ -1,7 +1,16 @@
 import React, { useRef, useState, useEffect } from "react";
-import { StyleSheet, Text, View, Button, Dimensions } from "react-native";
+import {
+  StyleSheet,
+  Text,
+  View,
+  Dimensions,
+  TouchableOpacity,
+  FlatList,
+} from "react-native";
 import { HeaderButtons, Item } from "react-navigation-header-buttons";
 import { Modalize } from "react-native-modalize";
+import { MaterialCommunityIcons } from "@expo/vector-icons";
+import nextId from "react-id-generator";
 
 import HeaderButton from "../components/HeaderButton";
 import RollButton from "../components/RollButton";
@@ -11,6 +20,7 @@ import DefaultText from "../components/DefaultText";
 import DiceButtons from "../components/DiceButtons";
 import RollModalButton from "../components/RollModalButton";
 import RedBorder from "../components/RedBorder";
+import HistoryList from "../components/HistoryList";
 
 import Colors from "../constants/colors";
 
@@ -31,6 +41,7 @@ const RollScreen = (props) => {
   const [dicePool, setDicePool] = useState({ dicePoolInitial });
   const [rollResults, setRollResults] = useState({});
   const [rollStats, setRollStats] = useState({});
+  const [rollHistoric, setRollHistoric] = useState([]);
 
   //controlador do Modal
   const modalizeRef = useRef(null);
@@ -58,7 +69,6 @@ const RollScreen = (props) => {
 
       dicePools[dice] = (dicePools[dice] || 0) + 1;
     });
-    /* console.log(dicePools); */
     setDicePool(dicePools);
   };
 
@@ -184,7 +194,6 @@ const RollScreen = (props) => {
       };
 
       sum(results);
-      console.log("results", results);
       setRollResults(results);
     };
     rollPoolObj(pool);
@@ -194,35 +203,33 @@ const RollScreen = (props) => {
   const rollResultsPerDice = (results) => {
     let rollResultsText = "";
     Object.keys(results).forEach((diceRolls) => {
-      if (diceRolls === "rollMod" ||diceRolls === "rollSum") return;
+      if (diceRolls === "rollMod" || diceRolls === "rollSum") return;
 
       if (results[diceRolls].length !== 0) {
         const resultsString = results[diceRolls].toString();
-        console.log("resultsString", resultsString);
         switch (diceRolls) {
           case "D4Roll":
-            rollResultsText += ` D4: ${resultsString},`;
+            rollResultsText += ` D4: ${resultsString} |`;
             break;
           case "D6Roll":
-            rollResultsText += ` D6: ${resultsString},`;
+            rollResultsText += ` D6: ${resultsString} |`;
             break;
           case "D8Roll":
-            rollResultsText += ` D8: ${resultsString},`;
+            rollResultsText += ` D8: ${resultsString} |`;
             break;
           case "D10Roll":
-            rollResultsText += ` D10: ${resultsString},`;
+            rollResultsText += ` D10: ${resultsString} |`;
             break;
           case "D12Roll":
-            rollResultsText += ` D12: ${resultsString},`;
+            rollResultsText += ` D12: ${resultsString} |`;
             break;
           case "D20Roll":
-            rollResultsText += ` D20: ${resultsString},`;
+            rollResultsText += ` D20: ${resultsString} |`;
             break;
         }
       } else {
-        return
+        return;
       }
-      console.log("rollResultsText", rollResultsText);
     });
     return rollResultsText;
   };
@@ -233,9 +240,19 @@ const RollScreen = (props) => {
     setRollStats({
       diceTextFinal: diceTextFinal,
       rollResulTextFinal: rollResulTextFinal,
+      rollSum: rollResults.rollSum,
     });
     console.log(rollStats);
   }, [rollResults]);
+
+  //add a rolagem no histórico
+  useEffect(() => {
+    const id = nextId();
+    let rollStastWithId = { ...rollStats, ...{ id: id } };
+
+    setRollHistoric((historic) => [...historic, rollStastWithId]);
+    console.log("historico:", rollHistoric);
+  }, [rollStats]);
 
   //gerar o texto do valor total
   const rollSumResultFinal = () => {
@@ -243,6 +260,28 @@ const RollScreen = (props) => {
     finalText = rollResults.rollSum !== 0 ? rollResults.rollSum : "";
     return finalText;
   };
+
+  //renderItem Flatlist
+  const renderItemFlatlist = ({ item }) => {
+    if (
+      !item.rollSum ||
+      !item.diceTextFinal ||
+      !item.rollResulTextFinal ||
+      !item.rollSum === 0
+    ) {
+      return;
+    }
+    return (
+      <HistoryList
+        /* style={{ transform: [{ scaleY: -1 }] }} */
+        rollPool={item.diceTextFinal}
+        rollSum={item.rollSum}
+        rollResults={item.rollResulTextFinal}
+      />
+    );
+  };
+
+  const flatlist = useRef(null)
 
   return (
     <>
@@ -257,11 +296,32 @@ const RollScreen = (props) => {
         }}
       >
         <View style={styles.buttons}>
-          <RedBorder style={styles.redBorder}>
-            <DefaultText style={styles.textRedBorder}>
-              {diceCounter()}
-            </DefaultText>
-          </RedBorder>
+          <View
+            style={{
+              flexDirection: "row",
+              alignItems: "center",
+              justifyContent: "space-between",
+            }}
+          >
+            <RedBorder style={styles.redBorder}>
+              <DefaultText style={styles.textRedBorder}>
+                {diceCounter()}
+              </DefaultText>
+            </RedBorder>
+            <TouchableOpacity
+              style={{ marginLeft: 10 }}
+              onPress={() => {
+                setRollPool([]);
+                setDicePool(dicePoolInitial);
+              }}
+            >
+              <MaterialCommunityIcons
+                name="cancel"
+                size={32}
+                color={Colors.primary}
+              />
+            </TouchableOpacity>
+          </View>
           <View style={styles.diceButtonsContainer}>
             <DiceButtons
               icon="dice-d4"
@@ -334,6 +394,16 @@ const RollScreen = (props) => {
         <View style={styles.textContainer}>
           <BoldText style={styles.textBold}>Histórico</BoldText>
         </View>
+        <FlatList
+          style={styles.flatlistContainer}
+          contentContainerStyle={styles.flatlist}
+          data={rollHistoric}
+          renderItem={renderItemFlatlist}
+          keyExtractor={(item) => item.id}
+          ref={flatlist}
+          onContentSizeChange={() => flatlist.current.scrollToEnd()}
+          inverted
+        />
         <RollButton style={styles.rollButton} onPress={onOpen} />
       </View>
     </>
@@ -371,7 +441,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   redBorder: {
-    width: "80%",
+    width: "70%",
     height: 60,
     borderRadius: 15,
     alignItems: "center",
@@ -418,5 +488,15 @@ const styles = StyleSheet.create({
   },
   textBold: {
     color: Colors.primary,
+  },
+  flatlistContainer: {
+    height: 250,
+    flexGrow: 0,
+    width: "80%",
+    /* transform: [{ scaleY: -1 }]    */
+  },
+  flatlist: {
+    flexGrow: 1,
+    justifyContent: "flex-end",
   },
 });
