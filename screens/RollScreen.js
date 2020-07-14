@@ -273,7 +273,6 @@ const RollScreen = (props) => {
     }
     return (
       <HistoryList
-        /* style={{ transform: [{ scaleY: -1 }] }} */
         rollPool={item.diceTextFinal}
         rollSum={item.rollSum}
         rollResults={item.rollResulTextFinal}
@@ -281,7 +280,7 @@ const RollScreen = (props) => {
     );
   };
 
-  const flatlist = useRef(null)
+  const flatlist = useRef(null);
 
   return (
     <>
@@ -368,6 +367,7 @@ const RollScreen = (props) => {
           </View>
           <View style={styles.diceButtonsContainer}>
             <RollModalButton
+              title="ROLAR"
               onPress={() => {
                 rollDicePoolHandler(dicePool);
                 modalizeRef.current?.close();
@@ -490,10 +490,9 @@ const styles = StyleSheet.create({
     color: Colors.primary,
   },
   flatlistContainer: {
-    height: 250,
+    height: '40%',
     flexGrow: 0,
     width: "80%",
-    /* transform: [{ scaleY: -1 }]    */
   },
   flatlist: {
     flexGrow: 1,

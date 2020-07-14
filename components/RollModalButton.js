@@ -8,8 +8,8 @@ const RollModalButton = (props) => {
   return (
     <View style={{ ...styles.rollButton, ...props.style }}>
       <TouchableNativeFeedback onPress={props.onPress}>
-        <View style={styles.button} >
-        <BoldText style={styles.text}>ROLAR!</BoldText>
+        <View style={styles.button}>
+          <BoldText style={styles.text}>{props.title}</BoldText>
         </View>
       </TouchableNativeFeedback>
     </View>
@@ -26,7 +26,6 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     elevation: 5,
     overflow: "hidden",
-    
   },
   button: {
     height: 60,
