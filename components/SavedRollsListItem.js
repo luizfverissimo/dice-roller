@@ -1,11 +1,14 @@
-import React, { useState, version } from "react";
+import React, { useState, useRef } from "react";
 import {
   StyleSheet,
   View,
   TouchableNativeFeedback,
   TouchableOpacity,
+  FlatList,
+  Alert
 } from "react-native";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
+
 
 import Colors from "../constants/colors";
 import BoldText from "./BoldText";
@@ -14,6 +17,7 @@ import DefaultText from "./DefaultText";
 
 const SavedRollsListItem = (props) => {
   const [menuOpened, setMenuOpened] = useState(false);
+  
 
   const dropDownHandler = () => {
     if (!menuOpened) {
@@ -23,15 +27,30 @@ const SavedRollsListItem = (props) => {
     }
   };
 
+  const renderItemFlatlist = ({ item }) => {
+    return (
+      <View>
+        <DefaultText>
+          {item.title}: {item.numDice} {item.typeDice} {item.mod > 0 ? "+" : ""}{" "}
+          {item.mod === 0 ? "" : item.mod}
+        </DefaultText>
+      </View>
+    );
+  };
+
+  const rollIdProvider = () => {
+    props.onPressRoll(props.data.id)
+  }
+
   const DropDownMenu = () => {
     return (
       <RedBorder style={styles.dropDown}>
         <View style={styles.textContainer}>
-          <DefaultText>TESTE</DefaultText>
-          <DefaultText>TESTE</DefaultText>
-          <DefaultText>TESTE</DefaultText>
-          <DefaultText>TESTE</DefaultText>
-          <DefaultText>TESTE</DefaultText>
+          <FlatList
+            style={styles.flatlist}
+            data={props.data.rolls}
+            renderItem={renderItemFlatlist}
+          />
         </View>
         <View style={styles.buttonContainer}>
           <TouchableOpacity>
@@ -56,9 +75,12 @@ const SavedRollsListItem = (props) => {
   return (
     <>
       <View style={{ ...styles.rollButton, ...props.style }}>
-        <TouchableNativeFeedback onPress={props.onPress}>
+        <TouchableNativeFeedback onPress={() => {
+          props.onPress()
+          rollIdProvider()
+        } }>
           <View style={styles.button}>
-            <BoldText style={styles.text}>Título</BoldText>
+            <BoldText style={styles.text}>{props.data.title}</BoldText>
             <TouchableOpacity onPress={dropDownHandler}>
               <MaterialCommunityIcons
                 name="menu-down"
@@ -102,13 +124,14 @@ const styles = StyleSheet.create({
     alignSelf: "center",
     borderBottomLeftRadius: 10,
     borderBottomRightRadius: 10,
+    zIndex: 1,
   },
   textContainer: {
     margin: 10,
   },
   buttonContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-around',
-    marginBottom: 10
-  }
+    flexDirection: "row",
+    justifyContent: "space-around",
+    marginBottom: 10,
+  },
 });

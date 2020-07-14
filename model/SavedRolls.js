@@ -1,5 +1,6 @@
 class SavedRolls {
-  constructor (title, rolls) {
+  constructor (id, title, rolls) {
+    this.id = id,
     this.title = title,
     this.rolls = rolls
   }
