@@ -37,6 +37,40 @@ const ROLLS = [
       advDesv: false,
     },
   ]),
+  new SaveRolls("id3", "Super Roll", [
+    {
+      id: 'roll1',
+      title: "Save throw",
+      numDice: 1,
+      typeDice: "D20",
+      mod: 3,
+      advDesv: false,
+    },
+    {
+      id: 'roll2',
+      title: "Dano",
+      numDice: 3,
+      typeDice: "D10",
+      mod: -2,
+      advDesv: false,
+    },
+    {
+      id: 'roll3',
+      title: "Habilidade",
+      numDice: 1,
+      typeDice: "D12",
+      mod: 10,
+      advDesv: false,
+    },
+    {
+      id: 'roll4',
+      title: "Tiro Certeiro",
+      numDice: 3,
+      typeDice: "D4",
+      mod: 0,
+      advDesv: false,
+    },
+  ]),
 ];
 
 export default ROLLS;

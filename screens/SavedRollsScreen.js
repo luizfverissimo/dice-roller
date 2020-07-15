@@ -1,8 +1,9 @@
 import React, { useRef, useState } from "react";
-import { StyleSheet, FlatList, View, Dimensions, Button } from "react-native";
+import { StyleSheet, FlatList, View, Dimensions } from "react-native";
 import { HeaderButtons, Item } from "react-navigation-header-buttons";
 import { useSelector } from "react-redux";
 import { Modalize } from "react-native-modalize";
+import nextId from "react-id-generator";
 
 import HeaderButton from "../components/HeaderButton";
 import SavedRollsListItem from "../components/SavedRollsListItem";
@@ -14,14 +15,25 @@ import Colors from "../constants/colors";
 const initialState = {
   id: "",
   title: "",
-  rolls: [{ id: "", numDice: 0, typeDice: "", mod: 0 }],
+  rolls: [
+    {
+      id: "",
+      numDice: 0,
+      typeDice: "",
+      mod: 0,
+      title: "",
+      poolText: "",
+      rollResults: {
+        rollSum: 0,
+        rollArr: [],
+      },
+    },
+  ],
 };
 
 const SavedRollsScreen = (props) => {
-  const [selectedRoll, setSelectedRoll] = useState({ initialState });
-  const [selectRollsResult, setSelectRollsResult] = useState([]);
-
-  const rolls = useSelector((state) => state.rolls.userRolls);
+  const [selectedRoll, setSelectedRoll] = useState({});
+  const [selectedRollResults, setSelectedRollResults] = useState([]);
 
   //controlador do Modal
   const modalizeRef = useRef(null);
@@ -29,36 +41,62 @@ const SavedRollsScreen = (props) => {
     modalizeRef.current?.open();
   };
 
+  //pega as rolagens do state
+  const rolls = useSelector((state) => state.rolls.userRolls);
+
+  //compara as rolagens com a rolagem que foi tocada e salva no estado selectedRoll
+  const selectedSavedRollHandler = (rollId) => {
+    const touchRoll = rolls.filter((roll) => roll.id === rollId);
+    setSelectedRoll(touchRoll[0]);
+    rollSelectedSavedRoll(touchRoll[0]);
+  };
+
+  //realiza a rolagem
   const rollDice = (dice, numberDice, mod) => {
-    //realiza a rolagem
+    //tira o dado da string 'D4' = 4
     const diceType = parseInt(dice.substr(1, 2));
+    //objeto que levará o resultado
     let rollResults = {
       rollArr: [],
       rollSum: 0,
+      rollText: "",
     };
     for (let counter = 0; counter < numberDice; counter++) {
+      //rola o dado e add no array
       const roll = Math.floor(Math.random() * diceType) + 1;
       rollResults.rollSum += roll;
       rollResults.rollArr.push(roll);
     }
     rollResults.rollSum += mod;
-    console.log("rollResults:", rollResults);
+    //cria o text de resultado
+    rollResults.rollText = `${dice}: ${rollResults.rollArr.toString()}`;
+    /* console.log("rollResults:", rollResults); */
     return rollResults;
   };
 
-  const rollSelectedSavedRoll = (rollPool) => {
-    let allRollsResults = [];
-    rollPool.rolls.forEach((roll) => {
-      const results = rollDice(roll.typeDice, roll.numDice, roll.mod);
-      allRollsResults.push(results);
-    });
-    setSelectRollsResult(allRollsResults);
+  //cria o texto do pool, ex: 1 d20 + 2
+  const rollPoolCreatorText = (roll) => {
+    return `${roll.title}: ${roll.numDice} ${roll.typeDice} ${
+      roll.mod !== 0 ? (roll.mod > 0 ? `+ ${roll.mod}` : roll.mod) : ""
+    }`;
   };
 
-  const selectedSavedRollHandler = (rollId) => {
-    const touchRoll = rolls.filter((roll) => roll.id === rollId);
-    setSelectedRoll(touchRoll[0]);
-    rollSelectedSavedRoll(touchRoll[0]);
+  const rollSelectedSavedRoll = (rollPool) => {
+    let allRollsResult = [];
+    rollPool.rolls.forEach((roll) => {
+      let results = rollDice(roll.typeDice, roll.numDice, roll.mod);
+      const poolText = rollPoolCreatorText(roll);
+      results = { ...results, poolText: poolText };
+
+      const id = nextId();
+      results = { ...results, id: id };
+
+      allRollsResult.push(results);
+      console.log("results", results);
+    });
+    console.log("allRollsResult", allRollsResult);
+    setSelectedRollResults(allRollsResult);
+    console.log("selectedRollResults", selectedRollResults);
   };
 
   const renderItemFlatlist = ({ item }) => {
@@ -71,29 +109,16 @@ const SavedRollsScreen = (props) => {
     );
   };
 
-  const rollPoolCreatorText = (roll) => {
-    console.log("roll", roll);
-    return `${roll.title}: ${roll.numDice} ${roll.typeDice} ${
-      roll.mod !== 0 ? (roll.mod > 0 ? `+ ${roll.mod}` : roll.mod) : ""
-    }`;
-  };
-
-  const rollPoolShowerText = (roll) => {
-    if (!roll.rolls) {
-      return;
-    }
-    let text = ``;
-    roll.rolls.forEach((roll) => {
-      text += `| ${rollPoolCreatorText(roll)} |`;
-    });
-    return text;
-  };
-
-  const rollPoolShowerResult = (roll) => {
-    console.log('roll result', roll)
-    roll.forEach((roll) => {
-        
-    });
+  const renderItemFlatlistModal = ({ item }) => {
+    return (
+      <View style={styles.modalTextContainer}>
+        <BoldText>{item.poolText}</BoldText>
+        <RedBorder style={styles.redBorder}>
+          <BoldText style={styles.sumText} >{item.rollSum}</BoldText>
+        </RedBorder>
+        <DefaultText>{item.rollText}</DefaultText>
+      </View>
+    );
   };
 
   return (
@@ -103,13 +128,14 @@ const SavedRollsScreen = (props) => {
         modalHeight={Dimensions.get("window").height / 2}
         rootStyle={styles.rootModal}
         modalTopOffset={100}
-      >
-        <View style={styles.modalTextContainer}>
-          <BoldText>{selectedRoll.title}</BoldText>
-          <DefaultText>{rollPoolShowerText(selectedRoll)}</DefaultText>
-          {rollPoolShowerResult(selectRollsResult)}
-        </View>
-      </Modalize>
+        onClosed={() => setSelectedRollResults({})}
+        flatListProps={{
+          data: selectedRollResults,
+          renderItem: renderItemFlatlistModal,
+          keyExtractor: (item) => item.id,
+          style: {marginVertical: 20}
+        }}
+      ></Modalize>
       <View style={styles.screen}>
         <View style={styles.listContainer}>
           <FlatList
@@ -155,4 +181,16 @@ const styles = StyleSheet.create({
     marginTop: 20,
     alignItems: "center",
   },
+  redBorder: {
+    width: 50,
+    height: 50,
+    marginVertical: 10,
+    borderRadius: 10,
+    alignItems: 'center',
+    justifyContent: 'center'
+  },
+  sumText: {
+    color: Colors.primary,
+    fontSize: 28
+  }
 });
