@@ -242,7 +242,6 @@ const RollScreen = (props) => {
       rollResulTextFinal: rollResulTextFinal,
       rollSum: rollResults.rollSum,
     });
-    console.log(rollStats);
   }, [rollResults]);
 
   //add a rolagem no histórico
@@ -251,7 +250,6 @@ const RollScreen = (props) => {
     let rollStastWithId = { ...rollStats, ...{ id: id } };
 
     setRollHistoric((historic) => [...historic, rollStastWithId]);
-    console.log("historico:", rollHistoric);
   }, [rollStats]);
 
   //gerar o texto do valor total

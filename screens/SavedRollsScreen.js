@@ -72,7 +72,6 @@ const SavedRollsScreen = (props) => {
     rollResults.rollSum += modNum;
     //cria o text de resultado
     rollResults.rollText = `${dice}: ${rollResults.rollArr.toString()}`;
-    /* console.log("rollResults:", rollResults); */
     return rollResults;
   };
 
@@ -94,11 +93,8 @@ const SavedRollsScreen = (props) => {
       results = { ...results, id: id };
 
       allRollsResult.push(results);
-      console.log("results", results);
     });
-    console.log("allRollsResult", allRollsResult);
     setSelectedRollResults(allRollsResult);
-    console.log("selectedRollResults", selectedRollResults);
   };
 
   const renderItemFlatlist = ({ item }) => {
@@ -126,7 +122,6 @@ const SavedRollsScreen = (props) => {
 
   const editRollHandler = (id) => {
     props.navigation.navigate('NewRoll', {rollId: id})
-    console.log(id)
   }
 
   return (

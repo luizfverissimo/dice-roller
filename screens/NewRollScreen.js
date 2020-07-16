@@ -8,12 +8,16 @@ import {
   Picker,
   TouchableOpacity,
   FlatList,
+  KeyboardAvoidingView,
 } from "react-native";
 import { useSelector } from "react-redux";
 import { HeaderButtons, Item } from "react-navigation-header-buttons";
 import { Col, Row, Grid } from "react-native-easy-grid";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import nextId from "react-id-generator";
+
+import { useDispatch } from "react-redux";
+import * as rollActions from "../store/rolls-actions";
 
 import HeaderButton from "../components/HeaderButton";
 import DefaultText from "../components/DefaultText";
@@ -22,10 +26,13 @@ import Card from "../components/Card";
 import Colors from "../constants/colors";
 
 const NewRollScreen = (props) => {
+  //pega a id da rolagem salva
   const id = props.route.params ? props.route.params.rollId : null;
-  const selectedRoll = useSelector((state) =>
-    state.rolls.userRolls.find((roll) => roll.id === id)
-  );
+  //o objeto da rolagem salva de acordo com o id
+  const selectedRoll = useSelector((state) => {
+    const rollSelected = state.rolls.userRolls.find((roll) => roll.id === id);
+    return rollSelected;
+  });
 
   const flatlist = useRef(null);
 
@@ -42,13 +49,18 @@ const NewRollScreen = (props) => {
     },
   };
 
+  //state que armazena o título da rolagem
   const [rollTitle, setRollTitle] = useState(
     selectedRoll ? selectedRoll.title : ""
   );
+  //state que armazena as rolagens
   const [selectedRolls, setSelectedRolls] = useState(
     selectedRoll ? selectedRoll.rolls : [initialRoll]
   );
 
+  const dispatch = useDispatch();
+
+  //salva dos dados no state conforme o preenchimento
   const inputHandler = (id, key, input) => {
     const state = selectedRolls;
     const modifiedState = state.map((rolls) => {
@@ -58,14 +70,15 @@ const NewRollScreen = (props) => {
       return rolls;
     });
     setSelectedRolls(modifiedState);
-    console.log("selecteRolls on inputhandler", selectedRolls)
   };
 
+  //adiciona um input extra de rolagem
   const addInputHandler = () => {
     const newId = { ...initialRoll, id: nextId() };
     setSelectedRolls((rolls) => [...rolls, newId]);
   };
 
+  //remove o input extra de rolagem
   const removeInputHandler = (id) => {
     if (selectedRolls.length === 1) {
       Alert.alert("Atenção", "Você precisa ter pelo menos uma rolagem.", [
@@ -77,27 +90,7 @@ const NewRollScreen = (props) => {
     setSelectedRolls(rollsFiltered);
   };
 
-  const submitHandler = () => {
-    /* selectedRolls.map(roll => console.log("roll", roll)) */
-    console.log("submitedHandler", selectedRolls);
-  };
-
-  useEffect(() => {
-    props.navigation.setOptions({
-      headerRight: () => {
-        return (
-          <HeaderButtons HeaderButtonComponent={HeaderButton}>
-            <Item
-              title="Adicionar Rolagem"
-              iconName={"content-save"}
-              onPress={submitHandler}
-            />
-          </HeaderButtons>
-        );
-      },
-    });
-  }, []);
-
+  //input de rolagem
   const renderItemFlatList = ({ item }) => {
     return (
       <Card style={styles.card}>
@@ -118,6 +111,8 @@ const NewRollScreen = (props) => {
                 value={item.numDice}
                 keyboardType="numeric"
                 onChangeText={(text) => inputHandler(item.id, "numDice", text)}
+                autoCorrect={false}
+                maxLength={2}
               />
             </View>
           </Col>
@@ -129,7 +124,9 @@ const NewRollScreen = (props) => {
                 onValueChange={(itemValue) =>
                   inputHandler(item.id, "typeDice", itemValue)
                 }
+                style={styles.picker}
               >
+                <Picker.Item label="" value="" />
                 <Picker.Item label="D4" value="D4" />
                 <Picker.Item label="D6" value="D6" />
                 <Picker.Item label="D8" value="D8" />
@@ -147,6 +144,8 @@ const NewRollScreen = (props) => {
                 value={item.mod}
                 keyboardType="numeric"
                 onChangeText={(text) => inputHandler(item.id, "mod", text)}
+                autoCorrect={false}
+                maxLength={2}
               />
             </View>
           </Col>
@@ -164,33 +163,89 @@ const NewRollScreen = (props) => {
     );
   };
 
+  //função que é disparada ao apertar o botão salvar, dispatch a ação e volta para a tela anterior
+  const submitHandler = (title, rolls) => {
+    const inputCheckError = rolls.map((roll) => {
+      let status = false;
+      console.log("roll.numDice", roll.numDice, "roll.typeDice", roll.typeDice);
+      if (!roll.numDice || !roll.typeDice || !title) {
+        status = true;
+      } else {
+        status = false;
+      }
+      console.log("status", status);
+      return status;
+    });
+
+    console.log("inputCheckError", inputCheckError);
+
+    if (inputCheckError[0]) {
+      Alert.alert(
+        "Erro",
+        "Confira os dados de rolagem, a sua rolagem precisa ter um título e os campos número e dado não podem ficar em branco",
+        [{ text: "OK" }]
+      );
+      return;
+    }
+
+    if (id) {
+      dispatch(rollActions.updateRoll(id, title, rolls));
+    } else {
+      dispatch(rollActions.addRoll(title, rolls));
+    }
+
+    props.navigation.goBack();
+  };
+
+  //passa a função submitHandler para o botão no header
+  useEffect(() => {
+    props.navigation.setOptions({
+      headerRight: () => {
+        return (
+          <HeaderButtons HeaderButtonComponent={HeaderButton}>
+            <Item
+              title="Adicionar Rolagem"
+              iconName={"content-save"}
+              onPress={() => submitHandler(rollTitle, selectedRolls)}
+            />
+          </HeaderButtons>
+        );
+      },
+    });
+  }, [submitHandler]);
+
   return (
-    <View style={styles.form}>
-      <View style={styles.formControl}>
-        <BoldText>Nome da Rolagem</BoldText>
-        <TextInput
-          style={styles.input}
-          value={rollTitle}
-          onChangeText={(text) => setRollTitle(text)}
-        />
-      </View>
-      <FlatList
-        data={selectedRolls}
-        renderItem={renderItemFlatList}
-        style={styles.flatList}
-        ref={flatlist}
-        onContentSizeChange={() => flatlist.current.scrollToEnd()}
-      />
-      <View style={styles.buttonContainer}>
-        <TouchableOpacity onPress={addInputHandler}>
-          <MaterialCommunityIcons
-            name="plus-circle"
-            size={32}
-            color={Colors.primary}
+    <KeyboardAvoidingView
+      style={{ flex: 1 }}
+      keyboardVerticalOffset={50}
+    >
+      <View style={styles.form}>
+        <View style={styles.formControl}>
+          <BoldText>Nome da Rolagem</BoldText>
+          <TextInput
+            style={styles.input}
+            value={rollTitle}
+            onChangeText={(text) => setRollTitle(text)}
           />
-        </TouchableOpacity>
+        </View>
+        <FlatList
+          data={selectedRolls}
+          renderItem={renderItemFlatList}
+          style={styles.flatList}
+          ref={flatlist}
+          onContentSizeChange={() => flatlist.current.scrollToEnd()}
+        />
+        <View style={styles.buttonContainer}>
+          <TouchableOpacity onPress={addInputHandler}>
+            <MaterialCommunityIcons
+              name="plus-circle"
+              size={32}
+              color={Colors.primary}
+            />
+          </TouchableOpacity>
+        </View>
       </View>
-    </View>
+    </KeyboardAvoidingView>
   );
 };
 
@@ -230,5 +285,8 @@ const styles = StyleSheet.create({
   flatList: {
     height: "80%",
     marginVertical: 20,
+  },
+  picker: {
+    width: "110%",
   },
 });

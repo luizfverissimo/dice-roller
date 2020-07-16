@@ -8,7 +8,8 @@ import {
   Alert
 } from "react-native";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
-
+import { useDispatch } from 'react-redux'
+import * as rollActions from '../store/rolls-actions'
 
 import Colors from "../constants/colors";
 import BoldText from "./BoldText";
@@ -17,6 +18,8 @@ import DefaultText from "./DefaultText";
 
 const SavedRollsListItem = (props) => {
   const [menuOpened, setMenuOpened] = useState(false);
+
+  const dispatch = useDispatch()
   
 
   const dropDownHandler = () => {
@@ -42,6 +45,21 @@ const SavedRollsListItem = (props) => {
     props.onPressRoll(props.data.id)
   }
 
+  const deleteRollHandler = (id) => {
+    Alert.alert("Você tem certeza?", "Você deseja excluir essa rolagem?", [
+      {
+        text: "Não",
+        style: "default",
+      },
+      {
+        text: "Sim",
+        style: "destructive",
+        onPress: () => dispatch(rollActions.deleteRoll(id))
+      },
+    ]);
+    
+  }
+
   const DropDownMenu = () => {
     return (
       <RedBorder style={styles.dropDown}>
@@ -60,7 +78,7 @@ const SavedRollsListItem = (props) => {
               color="black"
             />
           </TouchableOpacity>
-          <TouchableOpacity>
+          <TouchableOpacity onPress={() => deleteRollHandler(props.data.id)} >
             <MaterialCommunityIcons
               name="trash-can-outline"
               size={32}
