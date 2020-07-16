@@ -55,19 +55,21 @@ const SavedRollsScreen = (props) => {
   const rollDice = (dice, numberDice, mod) => {
     //tira o dado da string 'D4' = 4
     const diceType = parseInt(dice.substr(1, 2));
+    const numberDiceNum = parseInt(numberDice)
+    const modNum = parseInt(mod)
     //objeto que levará o resultado
     let rollResults = {
       rollArr: [],
       rollSum: 0,
       rollText: "",
     };
-    for (let counter = 0; counter < numberDice; counter++) {
+    for (let counter = 0; counter < numberDiceNum; counter++) {
       //rola o dado e add no array
       const roll = Math.floor(Math.random() * diceType) + 1;
       rollResults.rollSum += roll;
       rollResults.rollArr.push(roll);
     }
-    rollResults.rollSum += mod;
+    rollResults.rollSum += modNum;
     //cria o text de resultado
     rollResults.rollText = `${dice}: ${rollResults.rollArr.toString()}`;
     /* console.log("rollResults:", rollResults); */
@@ -105,6 +107,7 @@ const SavedRollsScreen = (props) => {
         data={item}
         onPress={onOpen}
         onPressRoll={selectedSavedRollHandler}
+        onPressEditButton={editRollHandler}
       />
     );
   };
@@ -120,6 +123,11 @@ const SavedRollsScreen = (props) => {
       </View>
     );
   };
+
+  const editRollHandler = (id) => {
+    props.navigation.navigate('NewRoll', {rollId: id})
+    console.log(id)
+  }
 
   return (
     <>

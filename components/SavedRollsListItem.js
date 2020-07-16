@@ -53,7 +53,7 @@ const SavedRollsListItem = (props) => {
           />
         </View>
         <View style={styles.buttonContainer}>
-          <TouchableOpacity>
+          <TouchableOpacity onPress={() => props.onPressEditButton(props.data.id)} >
             <MaterialCommunityIcons
               name="square-edit-outline"
               size={32}
