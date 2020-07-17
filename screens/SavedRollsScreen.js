@@ -55,8 +55,8 @@ const SavedRollsScreen = (props) => {
   const rollDice = (dice, numberDice, mod) => {
     //tira o dado da string 'D4' = 4
     const diceType = parseInt(dice.substr(1, 2));
-    const numberDiceNum = parseInt(numberDice)
-    const modNum = parseInt(mod)
+    const numberDiceNum = parseInt(numberDice);
+    const modNum = parseInt(mod);
     //objeto que levará o resultado
     let rollResults = {
       rollArr: [],
@@ -69,7 +69,12 @@ const SavedRollsScreen = (props) => {
       rollResults.rollSum += roll;
       rollResults.rollArr.push(roll);
     }
-    rollResults.rollSum += modNum;
+    if (modNum === "") {
+      rollResults.rollSum += 0;
+    } else {
+      rollResults.rollSum += modNum;
+    }
+
     //cria o text de resultado
     rollResults.rollText = `${dice}: ${rollResults.rollArr.toString()}`;
     return rollResults;
@@ -113,7 +118,7 @@ const SavedRollsScreen = (props) => {
       <View style={styles.modalTextContainer}>
         <BoldText>{item.poolText}</BoldText>
         <RedBorder style={styles.redBorder}>
-          <BoldText style={styles.sumText} >{item.rollSum}</BoldText>
+          <BoldText style={styles.sumText}>{item.rollSum}</BoldText>
         </RedBorder>
         <DefaultText>{item.rollText}</DefaultText>
       </View>
@@ -121,8 +126,8 @@ const SavedRollsScreen = (props) => {
   };
 
   const editRollHandler = (id) => {
-    props.navigation.navigate('NewRoll', {rollId: id})
-  }
+    props.navigation.navigate("NewRoll", { rollId: id });
+  };
 
   return (
     <>
@@ -136,7 +141,7 @@ const SavedRollsScreen = (props) => {
           data: selectedRollResults,
           renderItem: renderItemFlatlistModal,
           keyExtractor: (item) => item.id,
-          style: {marginVertical: 20}
+          style: { marginVertical: 20 },
         }}
       ></Modalize>
       <View style={styles.screen}>
@@ -189,11 +194,11 @@ const styles = StyleSheet.create({
     height: 50,
     marginVertical: 10,
     borderRadius: 10,
-    alignItems: 'center',
-    justifyContent: 'center'
+    alignItems: "center",
+    justifyContent: "center",
   },
   sumText: {
     color: Colors.primary,
-    fontSize: 28
-  }
+    fontSize: 28,
+  },
 });
