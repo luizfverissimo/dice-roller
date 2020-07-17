@@ -55,3 +55,39 @@ export const fetchRolls = () => {
   })
   return promise  
 }
+
+export const updateRolls = (title, rolls, id) => {
+  const promise = new Promise((resolve, reject) => {
+    db.transaction((tx) => {
+      tx.executeSql(
+        "UPDATE rolls2 SET title = ?, rolls = ? WHERE id = ?;", 
+        [title, rolls, id],
+        (_, result) => {
+          resolve(result)
+        },
+        (_, err) => {
+          reject(err)
+        }
+      );
+    });
+  })
+  return promise  
+}
+
+export const deleteRollDb = (id) => {
+  const promise = new Promise((resolve, reject) => {
+    db.transaction((tx) => {
+      tx.executeSql(
+        "DELETE FROM rolls2 WHERE id = ?;", 
+        [id],
+        (_, result) => {
+          resolve(result)
+        },
+        (_, err) => {
+          reject(err)
+        }
+      );
+    });
+  })
+  return promise  
+} 
