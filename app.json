@@ -1,14 +1,15 @@
 {
   "expo": {
-    "name": "dice-roller",
-    "slug": "dice-roller",
+    "name": "Hot Dice Roller",
+    "slug": "hot-dice-roller",
     "version": "1.0.0",
+    "privacy": "unlisted",
     "orientation": "portrait",
-    "icon": "./assets/icon.png",
+    "icon": "./assets/icon-dice-roller.png",
     "splash": {
-      "image": "./assets/splash.png",
+      "image": "./assets/splash-dice-roller.png",
       "resizeMode": "contain",
-      "backgroundColor": "#ffffff"
+      "backgroundColor": "#E41D1D"
     },
     "updates": {
       "fallbackToCacheTimeout": 0
@@ -18,6 +19,12 @@
     ],
     "ios": {
       "supportsTablet": true
+    },
+    "android": {
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/icon-dice-roller-transp.png",
+        "backgroundColor": "#E41D1D"
+      }
     },
     "web": {
       "favicon": "./assets/favicon.png"

@@ -10,6 +10,7 @@ import {
 import { HeaderButtons, Item } from "react-navigation-header-buttons";
 import { Modalize } from "react-native-modalize";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
+import { Audio } from 'expo-av';
 import nextId from "react-id-generator";
 
 import HeaderButton from "../components/HeaderButton";
@@ -280,6 +281,17 @@ const RollScreen = (props) => {
 
   const flatlist = useRef(null);
 
+  //Controlador de som
+  const soundObject = new Audio.Sound()
+  const playRollDiceSound = async () => {
+    try {
+      await soundObject.loadAsync(require('../assets/dice-roll.mp3'))
+      await soundObject.playAsync()
+    } catch(err) {
+      console.log(err)
+    }
+  }
+
   return (
     <>
       <Modalize
@@ -369,6 +381,7 @@ const RollScreen = (props) => {
               onPress={() => {
                 rollDicePoolHandler(dicePool);
                 modalizeRef.current?.close();
+                playRollDiceSound()
               }}
             />
           </View>

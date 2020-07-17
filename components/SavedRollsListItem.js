@@ -9,6 +9,7 @@ import {
 } from "react-native";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { useDispatch } from 'react-redux'
+import { Audio } from 'expo-av';
 import * as rollActions from '../store/rolls-actions'
 
 import Colors from "../constants/colors";
@@ -60,6 +61,17 @@ const SavedRollsListItem = (props) => {
     
   }
 
+  //Controlador de som
+  const soundObject = new Audio.Sound()
+  const playRollDiceSound = async () => {
+    try {
+      await soundObject.loadAsync(require('../assets/dice-roll.mp3'))
+      await soundObject.playAsync()
+    } catch(err) {
+      console.log(err)
+    }
+  }
+
   const DropDownMenu = () => {
     return (
       <RedBorder style={styles.dropDown}>
@@ -96,6 +108,7 @@ const SavedRollsListItem = (props) => {
         <TouchableNativeFeedback onPress={() => {
           props.onPress()
           rollIdProvider()
+          playRollDiceSound()
         } }>
           <View style={styles.button}>
             <BoldText style={styles.text}>{props.data.title}</BoldText>
