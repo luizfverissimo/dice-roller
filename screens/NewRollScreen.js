@@ -167,17 +167,14 @@ const NewRollScreen = (props) => {
   const submitHandler = (title, rolls) => {
     const inputCheckError = rolls.map((roll) => {
       let status = false;
-      console.log("roll.numDice", roll.numDice, "roll.typeDice", roll.typeDice);
       if (!roll.numDice || !roll.typeDice || !title) {
         status = true;
       } else {
         status = false;
       }
-      console.log("status", status);
       return status;
     });
 
-    console.log("inputCheckError", inputCheckError);
 
     if (inputCheckError[0]) {
       Alert.alert(
@@ -217,7 +214,7 @@ const NewRollScreen = (props) => {
   return (
     <KeyboardAvoidingView
       style={{ flex: 1 }}
-      keyboardVerticalOffset={50}
+      keyboardVerticalOffset={100}
     >
       <View style={styles.form}>
         <View style={styles.formControl}>

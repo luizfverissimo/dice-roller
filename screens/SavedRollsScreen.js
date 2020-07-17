@@ -1,9 +1,10 @@
-import React, { useRef, useState } from "react";
+import React, { useRef, useState, useEffect } from "react";
 import { StyleSheet, FlatList, View, Dimensions } from "react-native";
 import { HeaderButtons, Item } from "react-navigation-header-buttons";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import { Modalize } from "react-native-modalize";
 import nextId from "react-id-generator";
+import * as rollActions from '../store/rolls-actions'
 
 import HeaderButton from "../components/HeaderButton";
 import SavedRollsListItem from "../components/SavedRollsListItem";
@@ -32,6 +33,11 @@ const initialState = {
 };
 
 const SavedRollsScreen = (props) => {
+  const dispatch = useDispatch()
+  useEffect(() => {
+    dispatch(rollActions.loadRolls())
+  }, [dispatch])
+
   const [selectedRoll, setSelectedRoll] = useState({});
   const [selectedRollResults, setSelectedRollResults] = useState([]);
 
@@ -56,7 +62,7 @@ const SavedRollsScreen = (props) => {
     //tira o dado da string 'D4' = 4
     const diceType = parseInt(dice.substr(1, 2));
     const numberDiceNum = parseInt(numberDice);
-    const modNum = parseInt(mod);
+
     //objeto que levará o resultado
     let rollResults = {
       rollArr: [],
@@ -69,10 +75,12 @@ const SavedRollsScreen = (props) => {
       rollResults.rollSum += roll;
       rollResults.rollArr.push(roll);
     }
-    if (modNum === "") {
-      rollResults.rollSum += 0;
-    } else {
-      rollResults.rollSum += modNum;
+
+    if(mod === '') {
+      rollResults.rollSum += 0
+    } else if (mod !== '') {
+      const modNum = parseInt(mod);
+      rollResults.rollSum += modNum
     }
 
     //cria o text de resultado
@@ -129,6 +137,14 @@ const SavedRollsScreen = (props) => {
     props.navigation.navigate("NewRoll", { rollId: id });
   };
 
+  const NoRollWarning = () => {
+    return(
+      <View style={{alignItems: 'center', justifyContent: 'center'}} >
+        <DefaultText style={{textAlign: 'center'}} >Não há rolagem salva, adicione uma nova rolagem.</DefaultText>
+      </View>
+    )
+  }
+
   return (
     <>
       <Modalize
@@ -146,11 +162,12 @@ const SavedRollsScreen = (props) => {
       ></Modalize>
       <View style={styles.screen}>
         <View style={styles.listContainer}>
-          <FlatList
+          {rolls.length !== 0 ? <FlatList
             data={rolls}
             keyExtractor={(item) => item.id}
             renderItem={renderItemFlatlist}
-          />
+          /> : <NoRollWarning/> }
+          
         </View>
       </View>
     </>

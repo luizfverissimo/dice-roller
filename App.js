@@ -5,9 +5,16 @@ import { createStore, combineReducers, applyMiddleware } from "redux";
 import { Provider } from "react-redux";
 import ReduxThunk from "redux-thunk";
 
+import { init } from "./helpers/db";
+
 import rollsReducer from "./store/rolls-reducers";
 
 import RollNavigator from "./navigation/RollNavigator";
+
+//inicia a DB SQL
+init()
+  .then(() => console.log("initialized DB"))
+  .catch((err) => console.log("initialized Fail", err));
 
 const fetchFonts = () => {
   return Font.loadAsync({
@@ -31,7 +38,7 @@ export default function App() {
   }
 
   return (
-    <Provider store={store} >
+    <Provider store={store}>
       <RollNavigator />
     </Provider>
   );
