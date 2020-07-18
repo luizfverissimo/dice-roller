@@ -135,7 +135,6 @@ const styles = StyleSheet.create({
     height: 60,
     width: "100%",
     borderRadius: 10,
-    elevation: 5,
     overflow: "hidden",
     marginTop: 10,
   },

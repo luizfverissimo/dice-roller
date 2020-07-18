@@ -125,6 +125,7 @@ const NewRollScreen = (props) => {
                   inputHandler(item.id, "typeDice", itemValue)
                 }
                 style={styles.picker}
+                mode='dropdown'
               >
                 <Picker.Item label="" value="" />
                 <Picker.Item label="D4" value="D4" />
@@ -232,11 +233,11 @@ const NewRollScreen = (props) => {
           ref={flatlist}
           onContentSizeChange={() => flatlist.current.scrollToEnd()}
         />
-        <View style={styles.buttonContainer}>
+        <View style={styles.buttonBottomContainer}>
           <TouchableOpacity onPress={addInputHandler}>
             <MaterialCommunityIcons
               name="plus-circle"
-              size={32}
+              size={42}
               color={Colors.primary}
             />
           </TouchableOpacity>
@@ -275,15 +276,20 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
     fontFamily: "roboto",
   },
-  buttonContainer: {
+  buttonContainer: { 
     alignItems: "center",
-    marginBottom: 10,
+    marginBottom: 5
+  },
+  buttonBottomContainer: {
+    alignItems: "center",
+    bottom: 10
   },
   flatList: {
     height: "80%",
     marginVertical: 20,
   },
   picker: {
-    width: "110%",
+    width: "120%",
+    fontFamily: 'roboto'
   },
 });
