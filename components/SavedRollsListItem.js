@@ -8,7 +8,7 @@ import {
   Alert
 } from "react-native";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
-import { useDispatch } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import { Audio } from 'expo-av';
 import * as rollActions from '../store/rolls-actions'
 
@@ -63,13 +63,16 @@ const SavedRollsListItem = (props) => {
 
   //Controlador de som
   const soundObject = new Audio.Sound()
+  const soundState = useSelector(state => state.config.state)
   const playRollDiceSound = async () => {
-    try {
-      await soundObject.loadAsync(require('../assets/dice-roll.mp3'))
-      await soundObject.playAsync()
-    } catch(err) {
-      console.log(err)
-    }
+    if(soundState) {
+      try {
+        await soundObject.loadAsync(require('../assets/dice-roll.mp3'))
+        await soundObject.playAsync()
+      } catch(err) {
+        console.log(err)
+      }
+    } 
   }
 
   const DropDownMenu = () => {

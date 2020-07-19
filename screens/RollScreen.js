@@ -7,6 +7,7 @@ import {
   TouchableOpacity,
   FlatList,
 } from "react-native";
+import {useSelector} from 'react-redux'
 import { HeaderButtons, Item } from "react-navigation-header-buttons";
 import { Modalize } from "react-native-modalize";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
@@ -283,13 +284,16 @@ const RollScreen = (props) => {
 
   //Controlador de som
   const soundObject = new Audio.Sound()
+  const soundState = useSelector(state => state.config.state)
   const playRollDiceSound = async () => {
-    try {
-      await soundObject.loadAsync(require('../assets/dice-roll.mp3'))
-      await soundObject.playAsync()
-    } catch(err) {
-      console.log(err)
-    }
+    if(soundState) {
+      try {
+        await soundObject.loadAsync(require('../assets/dice-roll.mp3'))
+        await soundObject.playAsync()
+      } catch(err) {
+        console.log(err)
+      }
+    } 
   }
 
   return (
@@ -426,6 +430,18 @@ export default RollScreen;
 export const screenOptions = (navData) => {
   return {
     headerTitle: "Rolagens",
+    
+    headerLeft: () => {
+      return (
+        <HeaderButtons HeaderButtonComponent={HeaderButton}>
+          <Item
+            title="Menu"
+            iconName={"menu"}
+            onPress={() => navData.navigation.toggleDrawer()}
+          />
+        </HeaderButtons>
+      );
+    },
     headerRight: () => {
       return (
         <HeaderButtons HeaderButtonComponent={HeaderButton}>

@@ -166,8 +166,8 @@ const NewRollScreen = (props) => {
 
   //função que é disparada ao apertar o botão salvar, dispatch a ação e volta para a tela anterior
   const submitHandler = (title, rolls) => {
-    const inputCheckError = rolls.map((roll) => {
-      let status = false;
+    let status = false;
+    const inputCheckError = rolls.map((roll) => {      
       if (!roll.numDice || !roll.typeDice || !title) {
         status = true;
       } else {
@@ -175,9 +175,9 @@ const NewRollScreen = (props) => {
       }
       return status;
     });
+    console.log('inputCheckError', inputCheckError)
 
-
-    if (inputCheckError[0]) {
+    if (inputCheckError.includes(true)) {
       Alert.alert(
         "Erro",
         "Confira os dados de rolagem, a sua rolagem precisa ter um título e os campos número e dado não podem ficar em branco",

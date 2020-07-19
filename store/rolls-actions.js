@@ -1,7 +1,5 @@
 import { insertRoll, fetchRolls, updateRolls, deleteRollDb } from "../helpers/db";
 
-import SavedRolls from "../model/SavedRolls";
-
 export const CREATE_ROLL = "CREATE_ROLL";
 export const UPDATE_ROLL = "UPDATE_ROLL";
 export const DELETE_ROLL = "DELETE_ROLL";

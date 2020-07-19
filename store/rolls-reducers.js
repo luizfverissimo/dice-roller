@@ -1,7 +1,6 @@
-import ROLLS from "../data/dummy-data";
+
 import { ADD_ROLL, UPDATE_ROLL, DELETE_ROLL, SET_ROLLS } from "./rolls-actions";
 import SavedRolls from "../model/SavedRolls";
-import { ActionSheetIOS } from "react-native";
 
 const initialState = {
   userRolls: [],

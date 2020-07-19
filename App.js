@@ -8,6 +8,7 @@ import ReduxThunk from "redux-thunk";
 import { init } from "./helpers/db";
 
 import rollsReducer from "./store/rolls-reducers";
+import configReducer from './store/config-reducers'
 
 import RollNavigator from "./navigation/RollNavigator";
 
@@ -25,6 +26,7 @@ const fetchFonts = () => {
 
 const rootReducer = combineReducers({
   rolls: rollsReducer,
+  config: configReducer
 });
 
 const store = createStore(rootReducer, applyMiddleware(ReduxThunk));
