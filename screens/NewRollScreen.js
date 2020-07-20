@@ -9,10 +9,11 @@ import {
   TouchableOpacity,
   FlatList,
   KeyboardAvoidingView,
+  Dimensions
 } from "react-native";
 import { useSelector } from "react-redux";
 import { HeaderButtons, Item } from "react-navigation-header-buttons";
-import { Col, Row, Grid } from "react-native-easy-grid";
+import { Col, Grid } from "react-native-easy-grid";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import nextId from "react-id-generator";
 
@@ -285,7 +286,7 @@ const styles = StyleSheet.create({
     bottom: 10
   },
   flatList: {
-    height: "80%",
+    height: Dimensions.get("window").height < 900 ? "70%": '80%',
     marginVertical: 20,
   },
   picker: {

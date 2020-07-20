@@ -7,11 +7,11 @@ import {
   TouchableOpacity,
   FlatList,
 } from "react-native";
-import {useSelector} from 'react-redux'
+import { useSelector } from "react-redux";
 import { HeaderButtons, Item } from "react-navigation-header-buttons";
 import { Modalize } from "react-native-modalize";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
-import { Audio } from 'expo-av';
+import { Audio } from "expo-av";
 import nextId from "react-id-generator";
 
 import HeaderButton from "../components/HeaderButton";
@@ -283,24 +283,28 @@ const RollScreen = (props) => {
   const flatlist = useRef(null);
 
   //Controlador de som
-  const soundObject = new Audio.Sound()
-  const soundState = useSelector(state => state.config.state)
+  const soundObject = new Audio.Sound();
+  const soundState = useSelector((state) => state.config.state);
   const playRollDiceSound = async () => {
-    if(soundState) {
+    if (soundState) {
       try {
-        await soundObject.loadAsync(require('../assets/dice-roll.mp3'))
-        await soundObject.playAsync()
-      } catch(err) {
-        console.log(err)
+        await soundObject.loadAsync(require("../assets/dice-roll.mp3"));
+        await soundObject.playAsync();
+      } catch (err) {
+        console.log(err);
       }
-    } 
-  }
+    }
+  };
 
   return (
     <>
       <Modalize
         ref={modalizeRef}
-        modalHeight={Dimensions.get("window").height / 2}
+        modalHeight={
+          Dimensions.get("window").height < 900
+            ? Dimensions.get("window").height / 1.8
+            : Dimensions.get("window").height / 2
+        }
         rootStyle={styles.rootModal}
         modalTopOffset={100}
         onClosed={() => {
@@ -385,7 +389,7 @@ const RollScreen = (props) => {
               onPress={() => {
                 rollDicePoolHandler(dicePool);
                 modalizeRef.current?.close();
-                playRollDiceSound()
+                playRollDiceSound();
               }}
             />
           </View>
@@ -430,7 +434,7 @@ export default RollScreen;
 export const screenOptions = (navData) => {
   return {
     headerTitle: "Rolagens",
-    
+
     headerLeft: () => {
       return (
         <HeaderButtons HeaderButtonComponent={HeaderButton}>
@@ -517,7 +521,7 @@ const styles = StyleSheet.create({
     color: Colors.primary,
   },
   flatlistContainer: {
-    height: '40%',
+    height: Dimensions.get('window').height < 500 ? "35%" : "18%",
     flexGrow: 0,
     width: "80%",
   },
