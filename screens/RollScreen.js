@@ -301,7 +301,7 @@ const RollScreen = (props) => {
       <Modalize
         ref={modalizeRef}
         modalHeight={
-          Dimensions.get("window").height < 900
+          Dimensions.get("window").height < 700
             ? Dimensions.get("window").height / 1.8
             : Dimensions.get("window").height / 2
         }
@@ -521,7 +521,7 @@ const styles = StyleSheet.create({
     color: Colors.primary,
   },
   flatlistContainer: {
-    height: Dimensions.get('window').height > 600 ? "30%" : "18%",
+    height: Dimensions.get('window').height > 700 ? "40%" : "18%",
     flexGrow: 0,
     width: "80%",
   },

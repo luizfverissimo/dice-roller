@@ -286,7 +286,7 @@ const styles = StyleSheet.create({
     bottom: 10
   },
   flatList: {
-    height: Dimensions.get("window").height < 900 ? "70%": '80%',
+    height: Dimensions.get("window").height < 700 ? "70%": '80%',
     marginVertical: 20,
   },
   picker: {
