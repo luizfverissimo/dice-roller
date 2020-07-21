@@ -113,7 +113,7 @@ const RollDrawer = () => {
           }}
         />
         <RollDrawerNavigator.Screen
-          name="About"
+          name="Sobre"
           component={AboutNavigator}
           options={{
             drawerIcon: (props) => {

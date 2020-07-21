@@ -290,7 +290,7 @@ const styles = StyleSheet.create({
     marginVertical: 20,
   },
   picker: {
-    width: "120%",
+    width: "140%",
     fontFamily: 'roboto'
   },
 });

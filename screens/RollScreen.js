@@ -521,7 +521,7 @@ const styles = StyleSheet.create({
     color: Colors.primary,
   },
   flatlistContainer: {
-    height: Dimensions.get('window').height < 500 ? "35%" : "18%",
+    height: Dimensions.get('window').height > 600 ? "30%" : "18%",
     flexGrow: 0,
     width: "80%",
   },
