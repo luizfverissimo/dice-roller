@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { SafeAreaView, StatusBar } from "react-native";
 import { AppLoading } from "expo";
 import * as Font from "expo-font";
 import { createStore, combineReducers, applyMiddleware } from "redux";
@@ -6,6 +7,7 @@ import { Provider } from "react-redux";
 import ReduxThunk from "redux-thunk";
 
 import { init } from "./helpers/db";
+import Colors from "./constants/colors";
 
 import rollsReducer from "./store/rolls-reducers";
 import configReducer from './store/config-reducers'
@@ -41,7 +43,14 @@ export default function App() {
 
   return (
     <Provider store={store}>
-      <RollNavigator />
+      <SafeAreaView style={{ flex: 1 }}>
+      <StatusBar
+        barStyle='light-content'
+        backgroundColor={Colors.primary}
+        />
+        <RollNavigator />
+    </SafeAreaView>
+      
     </Provider>
   );
 }

@@ -9,7 +9,7 @@ import {
   TouchableOpacity,
   FlatList,
   KeyboardAvoidingView,
-  Dimensions
+  Dimensions,
 } from "react-native";
 import { useSelector } from "react-redux";
 import { HeaderButtons, Item } from "react-navigation-header-buttons";
@@ -126,7 +126,7 @@ const NewRollScreen = (props) => {
                   inputHandler(item.id, "typeDice", itemValue)
                 }
                 style={styles.picker}
-                mode='dropdown'
+                mode="dropdown"
               >
                 <Picker.Item label="" value="" />
                 <Picker.Item label="D4" value="D4" />
@@ -168,7 +168,7 @@ const NewRollScreen = (props) => {
   //função que é disparada ao apertar o botão salvar, dispatch a ação e volta para a tela anterior
   const submitHandler = (title, rolls) => {
     let status = false;
-    const inputCheckError = rolls.map((roll) => {      
+    const inputCheckError = rolls.map((roll) => {
       if (!roll.numDice || !roll.typeDice || !title) {
         status = true;
       } else {
@@ -176,7 +176,7 @@ const NewRollScreen = (props) => {
       }
       return status;
     });
-    console.log('inputCheckError', inputCheckError)
+    console.log("inputCheckError", inputCheckError);
 
     if (inputCheckError.includes(true)) {
       Alert.alert(
@@ -214,10 +214,7 @@ const NewRollScreen = (props) => {
   }, [submitHandler]);
 
   return (
-    <KeyboardAvoidingView
-      style={{ flex: 1 }}
-      keyboardVerticalOffset={100}
-    >
+    <KeyboardAvoidingView style={{ flex: 1 }} keyboardVerticalOffset={100}>
       <View style={styles.form}>
         <View style={styles.formControl}>
           <BoldText>Nome da Rolagem</BoldText>
@@ -277,20 +274,20 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
     fontFamily: "roboto",
   },
-  buttonContainer: { 
+  buttonContainer: {
     alignItems: "center",
-    marginBottom: 5
+    marginBottom: 5,
   },
   buttonBottomContainer: {
     alignItems: "center",
-    bottom: 10
+    bottom: 10,
   },
   flatList: {
-    height: Dimensions.get("window").height < 700 ? "70%": '80%',
+    height: Dimensions.get("window").height < 700 ? "70%" : "80%",
     marginVertical: 20,
   },
   picker: {
-    width: "140%",
-    fontFamily: 'roboto'
+    width: Dimensions.get("window").height < 700 ? "140%" : "120%",
+    fontFamily: "roboto",
   },
 });
