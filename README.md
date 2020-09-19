@@ -3,6 +3,8 @@
 # Aplicativo Fire Dice Roller :game_die:
 Aplicativo rolador de dados de RPG, com a possibilidade de salvar configurações de rolagens para agilizar a resolução de combates, ideal para jogadores e mestres de RPG. Aplicativo criado em **React-Native**.
 
+## [CLIQUE AQUI PARA REALIZAR O DOWNLOAD DO APK](https://1drv.ms/u/s!Ah4VKOGMPB8ojKQlRMtGRXWpUyLfFw?e=AhP183)
+
 <img src="/images/gif1.gif" alt="animação-fire-dice-roller" height="400"/> <img src="/images/1.png" alt="imagem1-fire-dice-roller" height="400"/> <img src="/images/2.png" alt="imagem2-fire-dice-roller" height="400"/> <img src="/images/3.png" alt="imagem3-fire-dice-roller" height="400"/> 
 
 <img src="/images/gif2.gif" alt="animação2-fire-dice-roller" height="400"/> <img src="/images/4.png" alt="imagem4-fire-dice-roller" height="400"/> <img src="/images/5.png" alt="imagem5-fire-dice-roller" height="400"/> <img src="/images/6.png" alt="imagem6-fire-dice-roller" height="400"/> 
