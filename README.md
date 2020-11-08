@@ -1,17 +1,20 @@
 <img src="/assets/icon-dice-roller.png" alt="placar-truco-icon" width="50" />
 
-# Aplicativo Fire Dice Roller :game_die:
-Aplicativo rolador de dados de RPG, com a possibilidade de salvar configurações de rolagens para agilizar a resolução de combates, ideal para jogadores e mestres de RPG. Aplicativo criado em **React-Native**.
+# App Fire Dice Roller :game_die:
+RPG dice roller App, with option to save rolls to speed combat in RPG, ideal for RPG players and masters. App created with **React-Native**.
 
-## [CLIQUE AQUI PARA REALIZAR O DOWNLOAD DO APK](https://1drv.ms/u/s!Ah4VKOGMPB8ojKQlRMtGRXWpUyLfFw?e=AhP183)
+[README em português](/README_pt-BR.md)
+
+## [CLICK HERE TO DOWNLOAD THE APK (in portuguese)](https://1drv.ms/u/s!Ah4VKOGMPB8ojKQlRMtGRXWpUyLfFw?e=AhP183)
 
 <img src="/images/gif1.gif" alt="animação-fire-dice-roller" height="400"/> <img src="/images/1.png" alt="imagem1-fire-dice-roller" height="400"/> <img src="/images/2.png" alt="imagem2-fire-dice-roller" height="400"/> <img src="/images/3.png" alt="imagem3-fire-dice-roller" height="400"/> 
 
 <img src="/images/gif2.gif" alt="animação2-fire-dice-roller" height="400"/> <img src="/images/4.png" alt="imagem4-fire-dice-roller" height="400"/> <img src="/images/5.png" alt="imagem5-fire-dice-roller" height="400"/> <img src="/images/6.png" alt="imagem6-fire-dice-roller" height="400"/> 
 
-## Conceito
-Nada supera a sensação de jogar dados físico, mas nem sempre você possui eles em mãos, pensando nisto, temos diversos aplicativos e sites que realizam rolagem de dados de diferentes faces. O **Fire Dice Roller** tem como objetivo facilitar algumas rolagens para agilizar algumas ações dentro do RPG, bem como facilitar a vida do Mestre/Narrador de RPG, com isso foi implementado a opção de salvar diferentes rolagens com diferentes tipos de dados, por exemplo, você pode salvar todas as rolagens de um monstro que você irá utilizar na sua campanha, assim realizar todas as rolagens de uma vez, sem precisar ficar consultado no material de apoio.
+## Concept
+Nothing beat the sensation to roll a real dice, but you don’t always have them in your hands, thinking about this, there are several applications and websites that roll dices. The **Fire Dice Roller** aims to facilitate some rolls to speed up some actions within the RPG, as well as to facilitate the life of the Master with the implementation of the option to save different rolls with different types of dices, for example, you can save all rolls of a monster that you will use in your campaign, so perform all the rolls at once, without having to consult the support material.
 
-## Tecnologias Utilizadas
-O aplicativo foi criado utilizando *React-Native* com o framework *Expo*, além das tecnologias presentes no framework *React (Hooks e Redux)*, foi utilizado *React-Navigation Drawer e StackNavigator v5* para a navegação entre telas, para armazenamento das rolagens no dispositivo, foi utilizado *Expo SQLite* para criação do banco de dados das rolagens. A biblioteca *Modalize* foi utilizada para a criação dos modals de rolagem.
+## Technologies Used
+
+The application was created using *React-Native* with the *Expo* framework, in addition to the technologies present in the *React (Hooks and Redux)* framework, *React-Navigation Drawer and StackNavigator v5* was used for navigation between screens, for storage of the scrolls on the device, *Expo SQLite* was used to create the scroll database. The *Modalize* library was used to create the scroll modals.
 
