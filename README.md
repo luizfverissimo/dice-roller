@@ -3,7 +3,7 @@
 # App Fire Dice Roller :game_die:
 RPG dice roller App, with option to save rolls to speed combat in RPG, ideal for RPG players and masters. App created with **React-Native**.
 
-[README em português](/README_pt-BR.md)
+#### [>README em português](/README_pt-BR.md)
 
 ## [CLICK HERE TO DOWNLOAD THE APK (in portuguese)](https://1drv.ms/u/s!Ah4VKOGMPB8ojKQlRMtGRXWpUyLfFw?e=AhP183)
 
