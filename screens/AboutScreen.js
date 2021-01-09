@@ -14,7 +14,7 @@ const AboutScreen = (props) => {
     <View style={styles.screen}>
       <View style={styles.textContainer}>
         <BoldText>Versão</BoldText>
-        <DefaultText>0.1.1</DefaultText>
+        <DefaultText>1.0.0</DefaultText>
       </View>
       <View style={styles.textContainer}>
         <BoldText>Autor</BoldText>
