@@ -2,7 +2,7 @@
   "expo": {
     "name": "Fire Dice Roller",
     "slug": "fire-dice-roller",
-    "version": "1.0.0",
+    "version": "1.0.1",
     "privacy": "unlisted",
     "orientation": "portrait",
     "icon": "./assets/icon-dice-roller.png",
