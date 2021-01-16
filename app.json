@@ -24,7 +24,8 @@
     },
     "android": {
       "package": "com.lfverissimo.firediceroller",
-      "versionCode": 2,
+      "versionCode": 3,
+      "permissions": [],
       "adaptiveIcon": {
         "foregroundImage": "./assets/icon-dice-roller-transp.png",
         "backgroundColor": "#E41D1D"
