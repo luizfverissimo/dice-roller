@@ -7,7 +7,7 @@ RPG dice roller App, with option to save rolls to speed combat in RPG, ideal for
 
 #### [>README em português](/README_pt-BR.md)
 
-## [CLICK HERE TO ACCESS PLAY STORE (pt-BR)](https://play.google.com/store/apps/details?id=com.lfverissimo.firediceroller3)
+## [CLICK HERE TO ACCESS PLAY STORE (pt-BR)](https://play.google.com/store/apps/details?id=com.lfverissimo.firediceroller)
 
 <img src="/images/gif1.gif" alt="animação-fire-dice-roller" height="400"/> <img src="/images/1.png" alt="imagem1-fire-dice-roller" height="400"/> <img src="/images/2.png" alt="imagem2-fire-dice-roller" height="400"/> <img src="/images/3.png" alt="imagem3-fire-dice-roller" height="400"/> 
 
