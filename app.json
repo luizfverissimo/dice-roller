@@ -2,7 +2,7 @@
   "expo": {
     "name": "Fire Dice Roller",
     "slug": "fire-dice-roller",
-    "version": "2.0.1",
+    "version": "4.0.1",
     "privacy": "unlisted",
     "orientation": "portrait",
     "icon": "./assets/icon-dice-roller.png",
@@ -24,7 +24,7 @@
     },
     "android": {
       "package": "com.lfverissimo.firediceroller",
-      "versionCode": 3,
+      "versionCode": 4,
       "permissions": [],
       "adaptiveIcon": {
         "foregroundImage": "./assets/icon-dice-roller-transp.png",
